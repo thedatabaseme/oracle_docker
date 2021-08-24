@@ -1,0 +1,2 @@
+1) Put the database patches (RU) and OPatch in this directory.
+2) Make sure the Dockerfile environment variables match the names.

@@ -1,0 +1,266 @@
+<DatabaseTemplate name="linux_19EE_dbca_template_sec0" description="" version="19.0.0.0.0">
+   <CommonAttributes>
+      <option name="OMS" value="false" includeInPDBs="false"/>
+      <option name="JSERVER" value="false" includeInPDBs="false"/>
+      <option name="SPATIAL" value="false" includeInPDBs="false"/>
+      <option name="IMEDIA" value="false" includeInPDBs="false"/>
+      <option name="ORACLE_TEXT" value="false" includeInPDBs="false"/>
+      <option name="SAMPLE_SCHEMA" value="false" includeInPDBs="false"/>
+      <option name="CWMLITE" value="false" includeInPDBs="false"/>
+      <option name="APEX" value="false" includeInPDBs="false"/>
+      <option name="DV" value="false" includeInPDBs="false"/>
+   </CommonAttributes>
+   <Variables/>
+   <CustomScripts Execute="false"/>
+   <InitParamAttributes>
+      <InitParams>
+	 <initParam name="backup_tape_io_slaves" value="TRUE"/>
+         <initParam name="db_name" value="{SID}"/>
+         <initParam name="db_domain" value=""/>
+         <initParam name="dispatchers" value="(PROTOCOL=TCP) (SERVICE={SID}XDB)"/>
+         <initParam name="audit_file_dest" value="/db_data/{SID}/dump/adump"/>
+         <initParam name="compatible" value="19.0.0"/>
+         <initParam name="remote_login_passwordfile" value="EXCLUSIVE"/>
+         <initParam name="log_archive_dest_1" value="'LOCATION=/db_data/{SID}/archive'"/>
+         <initParam name="sga_target" value="1" unit="GB"/>
+         <initParam name="sga_max_size" value="1" unit="GB"/>
+         <initParam name="processes" value="300"/>
+	 <initParam name="recyclebin" value="off"/>
+         <initParam name="undo_tablespace" value="UNDO"/>
+         <initParam name="control_files" value="(&quot;/db_data/{SID}/redo01/control01{SID}.ctl&quot;, &quot;/db_data/{SID}/redo02/control02{SID}.ctl&quot;, &quot;/db_data/{SID}/admin/cntrl/control03{SID}.ctl&quot;)"/>
+	 <initParam name="control_management_pack_access" value="NONE"/>
+         <initParam name="diagnostic_dest" value="/db_data/{SID}/dump/"/>
+	 <initParam name="db_recovery_file_dest" value="/db_data/{SID}/flash_recovery_area"/>
+	 <initParam name="db_recovery_file_dest_size" value="4" unit="GB"/>
+	 <initParam name="fast_start_mttr_target" value="300"/>
+	 <initParam name="job_queue_processes" value="10"/>
+         <initParam name="audit_trail" value="DB"/>
+         <initParam name="use_large_pages" value="TRUE"/>
+         <initParam name="log_archive_format" value="arc_{SID}_%s_%t_%r.dbf"/>
+         <initParam name="nls_territory" value="AMERICA"/>
+         <initParam name="db_block_size" value="8192"/>
+         <initParam name="open_cursors" value="500"/>
+         <initParam name="nls_language" value="AMERICAN"/>
+         <initParam name="nls_length_semantics" value="BYTE"/>
+         <initParam name="pga_aggregate_target" value="500" unit="MB"/>
+      </InitParams>
+      <MiscParams>
+         <customSGA>false</customSGA>
+         <characterSet>AL32UTF8</characterSet>
+         <nationalCharacterSet>AL16UTF16</nationalCharacterSet>
+         <archiveLogMode>true</archiveLogMode>
+         <initParamFileName>{ORACLE_HOME}/dbs/init{SID}.ora</initParamFileName>
+      </MiscParams>
+      <SPfile useSPFile="true">{ORACLE_HOME}/dbs/spfile{SID}.ora</SPfile>
+   </InitParamAttributes>
+   <StorageAttributes>
+      <ControlfileAttributes id="Controlfile">
+         <maxDatafiles>100</maxDatafiles>
+         <maxLogfiles>16</maxLogfiles>
+         <maxLogMembers>3</maxLogMembers>
+         <maxLogHistory>292</maxLogHistory>
+         <maxInstances>8</maxInstances>
+		 <image name="control01{SID}.ctl" filepath="/db_data/{SID}/redo01/"/>
+		 <image name="control02{SID}.ctl" filepath="/db_data/{SID}/redo02/"/>
+		 <image name="control03{SID}.ctl" filepath="/db_data/{SID}/admin/cntrl/"/>
+      </ControlfileAttributes>
+      <DatafileAttributes id="/db_data/{SID}/data01/sysaux01{SID}.dbf" con_id="0">
+         <tablespace>SYSAUX</tablespace>
+         <temporary>false</temporary>
+         <online>true</online>
+         <status>0</status>
+         <size unit="GB">2</size>
+         <reuse>true</reuse>
+         <autoExtend>false</autoExtend>
+         <increment unit="KB">10240</increment>
+         <maxSize unit="MB">-1</maxSize>
+      </DatafileAttributes>
+      <DatafileAttributes id="/db_data/{SID}/data01/system01{SID}.dbf" con_id="0">
+         <tablespace>SYSTEM</tablespace>
+         <temporary>false</temporary>
+         <online>true</online>
+         <status>0</status>
+         <size unit="GB">2</size>
+         <reuse>true</reuse>
+         <autoExtend>false</autoExtend>
+         <increment unit="KB">10240</increment>
+         <maxSize unit="MB">-1</maxSize>
+      </DatafileAttributes>
+      <DatafileAttributes id="/db_data/{SID}/temp/temp01{SID}.dbf" con_id="0">
+         <tablespace>TEMP</tablespace>
+         <temporary>true</temporary>
+         <online>true</online>
+         <status>0</status>
+         <size unit="GB">1</size>
+         <reuse>true</reuse>
+         <autoExtend>false</autoExtend>
+         <increment unit="KB">640</increment>
+         <maxSize unit="MB">-1</maxSize>
+      </DatafileAttributes>
+      <DatafileAttributes id="/db_data/{SID}/data01/undo01{SID}.dbf" con_id="0">
+         <tablespace>UNDO</tablespace>
+         <temporary>false</temporary>
+         <online>true</online>
+         <status>0</status>
+         <size unit="GB">1</size>
+         <reuse>true</reuse>
+         <autoExtend>false</autoExtend>
+         <increment unit="KB">5120</increment>
+         <maxSize unit="MB">-1</maxSize>
+      </DatafileAttributes>
+      <DatafileAttributes id="/db_data/{SID}/data01/users01{SID}.dbf" con_id="0">
+         <tablespace>USERS</tablespace>
+         <temporary>false</temporary>
+         <online>true</online>
+         <status>0</status>
+         <size unit="MB">50</size>
+         <reuse>true</reuse>
+         <autoExtend>false</autoExtend>
+         <increment unit="KB">1280</increment>
+         <maxSize unit="MB">-1</maxSize>
+      </DatafileAttributes>
+      <TablespaceAttributes id="SYSAUX" con_id="0">
+         <temporary>false</temporary>
+         <defaultTemp>false</defaultTemp>
+         <undo>false</undo>
+         <local>true</local>
+         <blockSize>8192</blockSize>
+         <allocation>1</allocation>
+         <uniAllocSize unit="KB">-1</uniAllocSize>
+         <initSize unit="KB">64</initSize>
+         <increment unit="KB">0</increment>
+         <incrementPercent>0</incrementPercent>
+         <minExtends>1</minExtends>
+         <maxExtends>-1</maxExtends>
+         <minExtendsSize unit="KB">64</minExtendsSize>
+         <logging>true</logging>
+         <recoverable>false</recoverable>
+         <maxFreeSpace>0</maxFreeSpace>
+         <autoSegmentMgmt>true</autoSegmentMgmt>
+         <bigfile>false</bigfile>
+         <datafilesList>
+            <TablespaceDatafileAttributes id="/db_data/{SID}/data01/sysaux01{SID}.dbf"/>
+         </datafilesList>
+      </TablespaceAttributes>
+      <TablespaceAttributes id="SYSTEM" con_id="0">
+         <temporary>false</temporary>
+         <defaultTemp>false</defaultTemp>
+         <undo>false</undo>
+         <local>true</local>
+         <blockSize>8192</blockSize>
+         <allocation>1</allocation>
+         <uniAllocSize unit="KB">-1</uniAllocSize>
+         <initSize unit="KB">64</initSize>
+         <increment unit="KB">0</increment>
+         <incrementPercent>0</incrementPercent>
+         <minExtends>1</minExtends>
+         <maxExtends>-1</maxExtends>
+         <minExtendsSize unit="KB">64</minExtendsSize>
+         <logging>true</logging>
+         <recoverable>false</recoverable>
+         <maxFreeSpace>0</maxFreeSpace>
+         <autoSegmentMgmt>false</autoSegmentMgmt>
+         <bigfile>false</bigfile>
+         <datafilesList>
+            <TablespaceDatafileAttributes id="/db_data/{SID}/data01/system01{SID}.dbf"/>
+         </datafilesList>
+      </TablespaceAttributes>
+      <TablespaceAttributes id="TEMP" con_id="0">
+         <temporary>true</temporary>
+         <defaultTemp>true</defaultTemp>
+         <undo>false</undo>
+         <local>true</local>
+         <blockSize>8192</blockSize>
+         <allocation>2</allocation>
+         <uniAllocSize unit="KB">1024</uniAllocSize>
+         <initSize unit="KB">1024</initSize>
+         <increment unit="KB">1024</increment>
+         <incrementPercent>0</incrementPercent>
+         <minExtends>1</minExtends>
+         <maxExtends>-1</maxExtends>
+         <minExtendsSize unit="KB">1024</minExtendsSize>
+         <logging>false</logging>
+         <recoverable>false</recoverable>
+         <maxFreeSpace>0</maxFreeSpace>
+         <autoSegmentMgmt>false</autoSegmentMgmt>
+         <bigfile>false</bigfile>
+         <datafilesList>
+            <TablespaceDatafileAttributes id="/db_data/{SID}/temp/temp01{SID}.dbf"/>
+         </datafilesList>
+      </TablespaceAttributes>
+      <TablespaceAttributes id="UNDO" con_id="0">
+         <temporary>false</temporary>
+         <defaultTemp>false</defaultTemp>
+         <undo>true</undo>
+         <local>true</local>
+         <blockSize>8192</blockSize>
+         <allocation>1</allocation>
+         <uniAllocSize unit="KB">-1</uniAllocSize>
+         <initSize unit="KB">64</initSize>
+         <increment unit="KB">0</increment>
+         <incrementPercent>0</incrementPercent>
+         <minExtends>1</minExtends>
+         <maxExtends>2147483645</maxExtends>
+         <minExtendsSize unit="KB">64</minExtendsSize>
+         <logging>true</logging>
+         <recoverable>false</recoverable>
+         <maxFreeSpace>0</maxFreeSpace>
+         <autoSegmentMgmt>false</autoSegmentMgmt>
+         <bigfile>false</bigfile>
+         <datafilesList>
+            <TablespaceDatafileAttributes id="/db_data/{SID}/data01/undo01{SID}.dbf"/>
+         </datafilesList>
+      </TablespaceAttributes>
+      <TablespaceAttributes id="USERS" con_id="0">
+         <temporary>false</temporary>
+         <defaultTemp>false</defaultTemp>
+         <undo>false</undo>
+         <local>true</local>
+         <blockSize>8192</blockSize>
+         <allocation>1</allocation>
+         <uniAllocSize unit="KB">-1</uniAllocSize>
+         <initSize unit="KB">64</initSize>
+         <increment unit="KB">0</increment>
+         <incrementPercent>0</incrementPercent>
+         <minExtends>1</minExtends>
+         <maxExtends>2147483645</maxExtends>
+         <minExtendsSize unit="KB">64</minExtendsSize>
+         <logging>true</logging>
+         <recoverable>false</recoverable>
+         <maxFreeSpace>0</maxFreeSpace>
+         <autoSegmentMgmt>true</autoSegmentMgmt>
+         <bigfile>false</bigfile>
+         <datafilesList>
+            <TablespaceDatafileAttributes id="/db_data/{SID}/data01/users01{SID}.dbf"/>
+         </datafilesList>
+      </TablespaceAttributes>
+      <RedoLogGroupAttributes id="1">
+         <reuse>false</reuse>
+         <fileSize unit="MB">500</fileSize>
+         <Thread>1</Thread>
+         <member ordinal="0" memberName="redo01a{SID}.log" filepath="/db_data/{SID}/redo01/"/>
+         <member ordinal="1" memberName="redo01b{SID}.log" filepath="/db_data/{SID}/redo02/"/>
+      </RedoLogGroupAttributes>
+      <RedoLogGroupAttributes id="2">
+         <reuse>false</reuse>
+         <fileSize unit="MB">500</fileSize>
+         <Thread>1</Thread>
+         <member ordinal="0" memberName="redo02a{SID}.log" filepath="/db_data/{SID}/redo01/"/>
+         <member ordinal="1" memberName="redo02b{SID}.log" filepath="/db_data/{SID}/redo02/"/>
+      </RedoLogGroupAttributes>
+      <RedoLogGroupAttributes id="3">
+         <reuse>false</reuse>
+         <fileSize unit="MB">500</fileSize>
+         <Thread>1</Thread>
+         <member ordinal="0" memberName="redo03a{SID}.log" filepath="/db_data/{SID}/redo01/"/>
+         <member ordinal="1" memberName="redo03b{SID}.log" filepath="/db_data/{SID}/redo02/"/>
+      </RedoLogGroupAttributes>
+      <RedoLogGroupAttributes id="4">
+         <reuse>false</reuse>
+         <fileSize unit="MB">500</fileSize>
+         <Thread>1</Thread>
+         <member ordinal="0" memberName="redo04a{SID}.log" filepath="/db_data/{SID}/redo01/"/>
+         <member ordinal="1" memberName="redo04b{SID}.log" filepath="/db_data/{SID}/redo02/"/>
+      </RedoLogGroupAttributes>
+   </StorageAttributes>
+</DatabaseTemplate>

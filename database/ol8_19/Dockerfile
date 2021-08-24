@@ -4,8 +4,6 @@
 #   - Oracle Linux 8 - Slim
 #   - Oracle Database
 #       https://www.oracle.com/technetwork/database/enterprise-edition/downloads/index.html
-#   - Oracle Application Express (APEX)
-#       https://www.oracle.com/technetwork/developer-tools/apex/downloads/index.html
 #
 # Example build and run.
 #
@@ -39,38 +37,38 @@ FROM oraclelinux:8-slim
 
 # File Author / Maintainer
 # Use LABEL rather than deprecated MAINTAINER
-# MAINTAINER Tim Hall (tim@oracle-base.com)
-LABEL maintainer="tim@oracle-base.com"
+LABEL maintainer="info@thedatabaseme.de"
 
 # ------------------------------------------------------------------------------
 # Define fixed (build time) environment variables.
-ENV ORACLE_BASE=/u01/app/oracle                                                \
-    ORACLE_HOME=/u01/app/oracle/product/19.0.0/dbhome_1                        \
-    ORA_INVENTORY=/u01/app/oraInventory                                        \
-    SOFTWARE_DIR=/u01/software                                                 \
+ENV ORACLE_BASE=/oracle                                                        \
+    ORACLE_HOME=/oracle/product/19_ENT                                         \
+    ORA_INVENTORY=/oracle/oraInventory                                         \
+    SOFTWARE_DIR=/oracle/sources                                                 \
+    PATCH_DIR=/oracle/sources/patches                                            \
     DB_SOFTWARE="LINUX.X64_193000_db_home.zip"                                 \
-    APEX_SOFTWARE="apex_21.1_en.zip"                                           \
     ORACLE_PASSWORD="oracle"                                                   \
-    SCRIPTS_DIR=/u01/scripts                                                   \
+    SCRIPTS_DIR=/oracle/sources/scripts                                          \
     ORAENV_ASK=NO
+
+# Define Arguments that can be changed during build Phase
+ARG INSTALL_PATCH=false                                                        \
+    PATCH_ID=
 
 # Separate ENV call to allow existing variables to be referenced.
 ENV PATH=${ORACLE_HOME}/bin:${PATH}
 
 # ------------------------------------------------------------------------------
 # Define config (runtime) environment variables.
-ENV ORACLE_SID=cdb1                                                            \
-    SYS_PASSWORD="SysPassword1"                                                \
-    PDB_NAME="pdb1"                                                            \
-    PDB_PASSWORD="PdbPassword1"                                                \
-    INSTALL_APEX="true"                                                        \
-    APEX_EMAIL="me@example.com"                                                \
-    APEX_PASSWORD="ApexPassword1"
+ENV ORACLE_SID=ORA19                                                           \
+    SYS_PASSWORD="SysPassword1"                                                
 
 # ------------------------------------------------------------------------------
 # Get all the files for the build.
 COPY software/* ${SOFTWARE_DIR}/
 COPY scripts/* ${SCRIPTS_DIR}/
+COPY templates/* ${SCRIPTS_DIR}/
+COPY patch/* ${PATCH_DIR}/
 
 # ------------------------------------------------------------------------------
 # Unpack all the software and remove the media.
@@ -83,16 +81,15 @@ COPY scripts/* ${SCRIPTS_DIR}/
 RUN microdnf install -y shadow-utils                                        && \
     groupadd -g 500 dba                                                     && \
     groupadd -g 501 oinstall                                                && \
-    groupadd -g 1042 docker_fg                                              && \
-    useradd -d /home/oracle -u 500 -g dba -G oinstall,dba,docker_fg -m -s /bin/bash oracle   && \
+    useradd -d /home/oracle -u 500 -g dba -G oinstall,dba -m -s /bin/bash oracle            && \
     sh ${SCRIPTS_DIR}/install_os_packages.sh                                && \
     mkdir -p ${ORACLE_HOME}                                                 && \
-    mkdir -p /u02/oradata                                                   && \
-    chown -R oracle:oinstall /u01                                           && \
+    mkdir -p /db_data/                                                      && \
+    chown -R oracle:oinstall /oracle                                        && \
     chmod u+x ${SCRIPTS_DIR}/*.sh                                           && \
-    chown -R oracle:docker_fg /u02                                          && \
-    chmod -R 775 /u02                                                       && \
-    chmod -R g+s /u02
+    chown -R oracle:dba /db_data                                            && \
+    chmod -R 775 /db_data                                                   && \
+    chmod -R g+s /db_data
 
 # Perform the following actions as the oracle user
 USER oracle
@@ -120,13 +117,13 @@ RUN export CV_ASSUME_DISTID=OEL7.6                                          && \
     oracle.install.db.OSDGDBA_GROUP=dba                                        \
     oracle.install.db.OSKMDBA_GROUP=dba                                        \
     oracle.install.db.OSRACDBA_GROUP=dba                                       \
+    oracle.installer.autoupdates.option=SKIP_UPDATES                           \
     SECURITY_UPDATES_VIA_MYORACLESUPPORT=false                                 \
     DECLINE_SECURITY_UPDATES=true; exit 0
 
-# Replace default APEX software with user-provided version.
-RUN rm -Rf ${ORACLE_HOME}/apex                                              && \
-    unzip -oqd ${ORACLE_HOME} ${SOFTWARE_DIR}/${APEX_SOFTWARE}              && \
-    rm ${SOFTWARE_DIR}/${APEX_SOFTWARE}
+# Move the DBCA Template to the Oracle Home Assistants Directory
+RUN mv ${SCRIPTS_DIR}/19EE_Database.rsp ${ORACLE_HOME}/assistants/dbca/templates/ && \
+    chown oracle:dba ${ORACLE_HOME}/assistants/dbca/templates/19EE_Database.rsp
 
 # Run the root scripts
 USER root
@@ -137,11 +134,10 @@ RUN sh ${ORA_INVENTORY}/orainstRoot.sh                                      && \
 # Perform the following actions as the oracle user
 USER oracle
 
-# Uncomment the following line if you want to apply patches.
-# You must have downloaded the patches and amended the "oracle_software_patch.sh" script.
-#RUN sh ${SCRIPTS_DIR}/oracle_software_patch.sh
+# You must have downloaded the patches and put the in the patch directory
+RUN sh ${SCRIPTS_DIR}/oracle_software_patch.sh                              && \
+    rm -Rf ${PATCH_DIR}
 
-#VOLUME ["/u02"]
 EXPOSE 1521 5500
 HEALTHCHECK --interval=5m --start-period=10m \
    CMD ${SCRIPTS_DIR}/healthcheck.sh >/dev/null || exit 1
