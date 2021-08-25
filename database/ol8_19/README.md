@@ -41,15 +41,20 @@ To build an Image, you can make two approaches. One just installing the Oracle 1
 one with a Release Update included.
 
 To install only the Base Release (19.3) you can issue the following commands:
-  cd <path_to_dockerfile>
-  docker build -t ol8_oradb:19.3 .
+
+```
+cd <path_to_dockerfile>
+docker build -t ol8_oradb:19.3 .
+```
 
 To install also a Release Update, you need to specify the ARGs INSTALL_PATCH and PATCH_ID. The
 PATCH_ID is the ID for the Release Update you want to install (also included in the Filename). In
 this example, we install the Release Update 19.9 on top of the 19.3 Base Release
-  
-  cd <path_to_dockerfile>
-  docker build -t ol8_oradb:19.9 --build-arg INSTALL_PATCH=true --build-arg PATCH_ID=31771877 .
+
+```
+cd <path_to_dockerfile>
+docker build -t ol8_oradb:19.9 --build-arg INSTALL_PATCH=true --build-arg PATCH_ID=31771877 .
+```
 
 Attention!: When you run the Image on an existing Database, the Database will not be updated to the
 installed Release Update. You have to do this manually. Only the RDBMS itself is patched here!
