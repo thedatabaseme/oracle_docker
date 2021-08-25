@@ -61,14 +61,18 @@ installed Release Update. You have to do this manually. Only the RDBMS itself is
 
 To install the Patch on the Database, you need to connect to the Container and run datapatch from there:
 
-  docker exec -it ol8_19_con /bin/bash
-  cd /oracle/product/19_ENT/OPatch
-  ./datapatch
+```
+docker exec -it ol8_19_con /bin/bash
+cd /oracle/product/19_ENT/OPatch
+./datapatch
+```
 
 Run the Docker Container:
 To run a Container based on the created Image above, you can issue the following docker run command. In this example, you will start a Container based on an persistent Volume located under /docker/oracle/ORATST on your Docker Host. 
 
-  docker run -dit --name ol8_19_con -p 1521:1521 -p 5500:5500 -v /docker/oracle/ORATST/:/db_data -e "ORACLE_SID=ORATST" -e "SYS_PASSWORD=Initial!" --restart unless-stopped ol8_oradb:19.3
+```
+docker run -dit --name ol8_19_con -p 1521:1521 -p 5500:5500 -v /docker/oracle/ORATST/:/db_data -e "ORACLE_SID=ORATST" -e "SYS_PASSWORD=Initial!" --restart unless-stopped ol8_oradb:19.3
+```
 
 When starting the first time, this will be recognized and a new Database will be created. Be aware, that the Sizing and Parameters are quite static at the moment. For Example, you cannot specify the 
 SGA size or the Character Set at the moment. You have to change the Parameters after the first 
@@ -77,12 +81,16 @@ accessible for later starts.
 
 Troubleshooting:
 You can have a look into the Log of the Container by using the docker logs command:
-  
-  docker logs --follow ol8_19_con
+
+```  
+docker logs --follow ol8_19_con
+```
 
 To connect to the Docker Container you can use docker exec:
 
-  docker exec -it ol8_19_con /bin/bash
+```
+docker exec -it ol8_19_con /bin/bash
+```
 
 Disclaimer:
 The fact that you can run Oracle Database within a Docker container does not mean, that you have
